@@ -1,0 +1,15 @@
+service: weather-sms-app
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-west-2
+  memorySize: 512
+  timeout: 300
+
+functions:
+  weather-notification-service:
+    name: weather-notification-service
+    handler: handler
+    events:
+      - schedule: cron(0 14 * * ? *)
