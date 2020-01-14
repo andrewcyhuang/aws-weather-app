@@ -1,8 +1,7 @@
 import axios from 'axios';
 import {urlBuilder, messageBuilder} from '../helpers/utils'
-import AWS from 'aws-sdk';
 
-require('dotenv').config();
+const AWS = require('aws-sdk');
 
 exports.handler = (event, context) => {
     const lat = '49.2859524'
@@ -11,18 +10,24 @@ exports.handler = (event, context) => {
 
     axios.get(url)
         .then(res => {
-            const sns = AWS.SNS();
-            const params = {
-                Message: messageBuilder(res),
-                PhoneNumber: process.env.PHONE_NUMBER,
-                MessageAttributes: {
-                    'AWS.SNS.SMS.SenderID': {
-                        'DataType': 'String',
-                        'StringValue': 'Weather Notification Service'
+            console.log(res);
+            if (res) {
+                const sns = new AWS.SNS();
+                const params = {
+                    Message: messageBuilder(res.data),
+                    PhoneNumber: process.env.PHONE_NUMBER,
+                    MessageAttributes: {
+                        'AWS.SNS.SMS.SenderID': {
+                            'DataType': 'String',
+                            'StringValue': 'Weather'
+                        }
                     }
                 }
+                console.log(params.PhoneNumber);
+                console.log(params.Message);
+
+                sns.publish(params, context.done);
             }
-            sns.publish(params, context.done);
         })
         .catch(err => {
             context.fail(err);
