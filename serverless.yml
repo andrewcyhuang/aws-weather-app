@@ -29,4 +29,4 @@ functions:
     name: weather-notification-service
     handler: src/app.handler
     events:
-      - schedule: cron(0 14 * * ? *)
+      - schedule: cron(30 14 * * ? *)
